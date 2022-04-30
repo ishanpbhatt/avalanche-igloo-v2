@@ -4,17 +4,21 @@ pragma solidity ^0.8.10;
 
 import "/Users/ishan/Desktop/hackathon/contracts/IglooNFT.sol";
 
-contract IglooHandler {
+contract ERC721Handler {
     IglooNFT IglooContract;
-    address bridgeAddress;
+    address _bridgeAddress;
 
-    constructor(address bridgeAddr, address iglooContractAddr) {
-        IglooContract = IglooNFT(iglooContractAddr);
-        bridgeAddress = bridgeAddr;
+    constructor(address bridgeAddr) {
+        IglooContract = new IglooNFT();
+        _bridgeAddress = bridgeAddr;
     }
 
     // I'm pretty sure I have to unpack the data on my end, or it'll make it easier for you
     function executeProposal(address userAddress, string memory key) public {
+        require(
+            msg.sender == _bridgeAddress,
+            "invalid permissions for executing this function"
+        );
         IglooContract.mint(userAddress, key);
     }
 }
