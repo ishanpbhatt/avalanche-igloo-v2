@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: UNLICENSED
 
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.9;
 
-import "/Users/ishan/Desktop/hackathon/contracts/IglooNFT.sol";
+import "./IglooNFT.sol";
 
 contract ERC721Handler {
     IglooNFT IglooContract;

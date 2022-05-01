@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: UNLICENSED
 
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.9;
 pragma experimental ABIEncoderV2;
 
-import "/Users/ishan/Desktop/hackathon/contracts/ERC721Handler.sol";
+import "./ERC721Handler.sol";
 
 contract SnowBridge {
     uint256 public _expiry;

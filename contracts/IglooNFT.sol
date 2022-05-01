@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: UNLICENSED
 
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.9;
 
-import "/Users/ishan/.brownie/packages/OpenZeppelin/openzeppelin-contracts@4.4.1/contracts/token/ERC721/ERC721.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
 
 contract IglooNFT is ERC721 {
     uint256 _currentId;
@@ -25,7 +25,7 @@ contract IglooNFT is ERC721 {
 
     function mint(address addr, string memory key) public {
         require(msg.sender == _owner, "not allowed to mint this NFT");
-        _mint(addr, _currentId);
+        _safeMint(addr, _currentId);
         keyValueMapping[addr][key] = true;
         _currentId += 1;
     }
