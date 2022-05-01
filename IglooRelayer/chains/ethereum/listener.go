@@ -10,7 +10,8 @@ import (
 	"math/big"
 	"time"
 
-	igloo "github.com/ChainSafe/ChainBridge/bindings/SnowBridge"
+	erc721Handler "github.com/ChainSafe/ChainBridge/bindings/ERC721Handler"
+	bridge "github.com/ChainSafe/ChainBridge/bindings/SnowBridge"
 	"github.com/ChainSafe/ChainBridge/chains"
 	utils "github.com/ChainSafe/ChainBridge/shared/ethereum"
 	"github.com/ChainSafe/chainbridge-utils/blockstore"
@@ -29,8 +30,8 @@ type listener struct {
 	cfg                   Config
 	conn                  Connection
 	router                chains.Router
-	bridgeContract        *igloo.SnowBridge // instance of bound bridge contract
-	erc721HandlerContract *igloo.ERC721Handler
+	bridgeContract        *bridge.SnowBridge // instance of bound bridge contract
+	erc721HandlerContract *erc721Handler.ERC721Handler
 	log                   log15.Logger
 	blockstore            blockstore.Blockstorer
 	stop                  <-chan int
@@ -56,7 +57,7 @@ func NewListener(conn Connection, cfg *Config, log log15.Logger, bs blockstore.B
 }
 
 // setContracts sets the listener with the appropriate contracts
-func (l *listener) setContracts(bridge *igloo.SnowBridge, erc721Handler *igloo.ERC721Handler) {
+func (l *listener) setContracts(bridge *bridge.SnowBridge, erc721Handler *erc721Handler.ERC721Handler) {
 	l.bridgeContract = bridge
 	l.erc721HandlerContract = erc721Handler
 }
