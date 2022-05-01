@@ -10,8 +10,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/ChainSafe/ChainBridge/bindings/SnowBridge"
-	"github.com/ChainSafe/ChainBridge/bindings/ERC721Handler"
+	igloo "github.com/ChainSafe/ChainBridge/bindings/SnowBridge"
 	"github.com/ChainSafe/ChainBridge/chains"
 	utils "github.com/ChainSafe/ChainBridge/shared/ethereum"
 	"github.com/ChainSafe/chainbridge-utils/blockstore"
@@ -19,7 +18,6 @@ import (
 	"github.com/ChainSafe/chainbridge-utils/msg"
 	"github.com/ChainSafe/log15"
 	eth "github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	ethcommon "github.com/ethereum/go-ethereum/common"
 )
 
@@ -28,18 +26,18 @@ var BlockRetryLimit = 5
 var ErrFatalPolling = errors.New("listener block polling failed")
 
 type listener struct {
-	cfg                    Config
-	conn                   Connection
-	router                 chains.Router
-	bridgeContract         *Bridge.Bridge // instance of bound bridge contract
-	erc721HandlerContract  *ERC721Handler.ERC721Handler
-	log                    log15.Logger
-	blockstore             blockstore.Blockstorer
-	stop                   <-chan int
-	sysErr                 chan<- error // Reports fatal error to core
-	latestBlock            metrics.LatestBlock
-	metrics                *metrics.ChainMetrics
-	blockConfirmations     *big.Int
+	cfg                   Config
+	conn                  Connection
+	router                chains.Router
+	bridgeContract        *igloo.SnowBridge // instance of bound bridge contract
+	erc721HandlerContract *igloo.ERC721Handler
+	log                   log15.Logger
+	blockstore            blockstore.Blockstorer
+	stop                  <-chan int
+	sysErr                chan<- error // Reports fatal error to core
+	latestBlock           metrics.LatestBlock
+	metrics               *metrics.ChainMetrics
+	blockConfirmations    *big.Int
 }
 
 // NewListener creates and returns a listener
@@ -58,7 +56,7 @@ func NewListener(conn Connection, cfg *Config, log log15.Logger, bs blockstore.B
 }
 
 // setContracts sets the listener with the appropriate contracts
-func (l *listener) setContracts(bridge *Bridge.Bridge, erc721Handler *ERC721Handler.ERC721Handler) {
+func (l *listener) setContracts(bridge *igloo.SnowBridge, erc721Handler *igloo.ERC721Handler) {
 	l.bridgeContract = bridge
 	l.erc721HandlerContract = erc721Handler
 }
@@ -162,9 +160,9 @@ func (l *listener) getPutDataEventsForBlock(latestBlock *big.Int) error {
 
 	// read through the log events and handle their putData event if handler is recognized
 	for _, log := range logs {
-		var m f
-		userAddress := log.Topics[1];
-		key := log.Topics[2];
+		var m msg.Message
+		userAddress := log.Topics[1]
+		key := log.Topics[2]
 
 		m, err = l.handleErc721PutDataEvent(userAddress, key)
 		if err != nil {

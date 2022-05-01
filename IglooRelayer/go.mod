@@ -10,7 +10,7 @@ require (
 	github.com/ava-labs/subnet-evm v0.2.1 // indirect
 	github.com/centrifuge/go-substrate-rpc-client v2.0.0+incompatible
 	github.com/dvyukov/go-fuzz v0.0.0-20200318091601-be3528f3a813 // indirect
-	github.com/ethereum/go-ethereum v1.10.16
+	github.com/ethereum/go-ethereum v1.10.17
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/prometheus/client_golang v1.11.0
 	github.com/rs/cors v1.7.0 // indirect

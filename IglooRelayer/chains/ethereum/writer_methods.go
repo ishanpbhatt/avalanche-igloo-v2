@@ -182,11 +182,7 @@ func (w *writer) voteProposal(m msg.Message) {
 				continue
 			}
 
-			tx, err := w.bridgeContract.VoteProposal(
-				w.conn.Opts(),
-				m.userAddress,
-				m.key
-			)
+			tx, err := w.bridgeContract.VoteProposal(w.conn.Opts(), m.userAddress, m.key)
 			w.conn.UnlockOpts()
 
 			if err == nil {
@@ -228,7 +224,7 @@ func (w *writer) executeProposal(m msg.Message, dataHash [32]byte) {
 				w.conn.Opts(),
 				m.userAddress,
 				m.key,
-				dataHash
+				dataHash,
 			)
 			w.conn.UnlockOpts()
 

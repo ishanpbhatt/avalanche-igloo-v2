@@ -4,7 +4,7 @@
 package ethereum
 
 import (
-	"github.com/ChainSafe/ChainBridge/bindings/SnowBridge"
+	igloo "github.com/ChainSafe/ChainBridge/bindings/SnowBridge"
 	"github.com/ChainSafe/chainbridge-utils/core"
 	metrics "github.com/ChainSafe/chainbridge-utils/metrics/types"
 	"github.com/ChainSafe/chainbridge-utils/msg"
@@ -21,7 +21,7 @@ var CancelledStatus uint8 = 4
 type writer struct {
 	cfg            Config
 	conn           Connection
-	bridgeContract *Bridge.Bridge // instance of bound receiver bridgeContract
+	bridgeContract *igloo.SnowBridge // instance of bound receiver bridgeContract
 	log            log15.Logger
 	stop           <-chan int
 	sysErr         chan<- error // Reports fatal error to core
