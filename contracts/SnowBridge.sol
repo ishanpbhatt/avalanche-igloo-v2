@@ -1,11 +1,21 @@
-//SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: LGPL-3.0-only
+pragma solidity 0.8.9;
 
-pragma solidity ^0.8.10;
 pragma experimental ABIEncoderV2;
 
-import "./IglooHandler.sol";
+import "./ERC721Handler.sol";
 
 contract SnowBridge {
+    uint256 public _expiry;
+    uint8 public _domainId;
+    uint256 public _relayerThreshold;
+    address[] public _relayers;
+    address public _owner;
+    ERC721Handler _handler;
+    mapping(address => bool) _isRelayerMap;
+    mapping(bytes32 => Proposal) _proposals;
+    mapping(bytes32 => mapping(address => bool)) _hasVoted;
+
     enum ProposalStatus {
         Inactive,
         Active,
@@ -20,17 +30,8 @@ contract SnowBridge {
     struct Proposal {
         ProposalStatus _status;
         uint8 _yesVotesTotal;
-        uint256 _proposedBlock; // 1099511627775 maximum block
+        uint256 _proposedBlock;
     }
-
-    uint256 public _expiry;
-    uint8 public _domainId;
-    uint256 public _relayerThreshold;
-    address[] public _relayers;
-    address public _owner;
-
-    IglooHandler _handler;
-    mapping(bytes32 => Proposal) _proposals;
 
     constructor(
         uint8 domainID,
@@ -40,21 +41,33 @@ contract SnowBridge {
         uint256 expiry,
         address owner
     ) {
+        _handler = ERC721Handler(handler);
         _domainId = domainID;
         _relayerThreshold = initialRelayerThreshold;
         _expiry = expiry;
-        _relayers = initialRelayers;
-        _handler = IglooHandler(handler);
         _owner = owner;
+
+        _relayers = initialRelayers;
+        for (uint256 i = 0; i < _relayers.length; i++) {
+            _isRelayerMap[_relayers[i]] = true;
+        }
     }
 
-    function getProposal() public pure {}
+    function getProposal(bytes32 dataHash)
+        public
+        view
+        returns (Proposal memory)
+    {
+        Proposal memory proposal = _proposals[dataHash];
+        return proposal;
+    }
 
     function executeProposal(
         address userAddress,
         string memory key,
         bytes32 dataHash
     ) public {
+        require(_isRelayerMap[msg.sender] == true, "not a valid relayer");
         Proposal memory proposal = _proposals[dataHash];
         require(
             proposal._status == ProposalStatus.Passed,
@@ -65,6 +78,7 @@ contract SnowBridge {
     }
 
     function voteProposal(address userAddress, string memory key) public {
+        require(_isRelayerMap[msg.sender] == true, "not a valid relayer");
         bytes32 dataHash = keccak256(abi.encodePacked(userAddress, key));
         Proposal memory proposal = _proposals[dataHash];
 
@@ -78,6 +92,7 @@ contract SnowBridge {
             "proposal already executed/cancelled"
         );
 
+        _hasVoted[dataHash][msg.sender] = true;
         if (proposal._status == ProposalStatus.Inactive) {
             proposal = Proposal({
                 _status: ProposalStatus.Active,
@@ -109,7 +124,15 @@ contract SnowBridge {
         }
     }
 
+    function hasVotedOnProposal(bytes32 dataHash, address relayer)
+        public
+        returns (bool)
+    {
+        return _hasVoted[dataHash][relayer] == true;
+    }
+
     function cancelProposal(bytes32 dataHash) public {
+        require(_isRelayerMap[msg.sender] == true, "not a valid relayer");
         Proposal memory proposal = _proposals[dataHash];
         ProposalStatus currentStatus = proposal._status;
 

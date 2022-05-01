@@ -1,6 +1,5 @@
-//SPDX-License-Identifier: UNLICENSED
-
-pragma solidity ^0.8.10;
+// SPDX-License-Identifier: LGPL-3.0-only
+pragma solidity 0.8.9;
 
 contract Storage {
     bytes ZERO_BYTE = "0x";
