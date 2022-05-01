@@ -7,15 +7,15 @@ contract Storage {
 
     event PutData(address userAddress, string key);
 
-    mapping(address => mapping(string => bytes)) public dataStorage;
+    mapping(address => mapping(string => string)) public dataStorage;
 
     function putData(
         address userAddress,
         string memory key,
-        bytes memory value
+        string memory value
     ) public {
         require(
-            dataStorage[userAddress][key].length == ZERO_BYTE.length,
+            bytes(dataStorage[userAddress][key]).length == 0,
             "can't override data"
         );
         dataStorage[userAddress][key] = value;

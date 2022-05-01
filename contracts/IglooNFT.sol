@@ -24,7 +24,7 @@ contract IglooNFT is ERC721 {
     }
 
     function mint(address addr, string memory key) public {
-        require(msg.sender == _owner, "not allowed to mint this NFT");
+        //require(msg.sender == _owner, "not allowed to mint this NFT");
         _safeMint(addr, _currentId);
         keyValueMapping[addr][key] = true;
         _currentId += 1;

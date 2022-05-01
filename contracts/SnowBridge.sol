@@ -14,6 +14,7 @@ contract SnowBridge {
     ERC721Handler _handler;
     mapping(address => bool) _isRelayerMap;
     mapping(bytes32 => Proposal) _proposals;
+    mapping(bytes32 => mapping(address => bool)) _hasVoted;
 
     enum ProposalStatus {
         Inactive,
@@ -91,6 +92,7 @@ contract SnowBridge {
             "proposal already executed/cancelled"
         );
 
+        _hasVoted[dataHash][msg.sender] = true;
         if (proposal._status == ProposalStatus.Inactive) {
             proposal = Proposal({
                 _status: ProposalStatus.Active,
@@ -120,6 +122,13 @@ contract SnowBridge {
         if (proposal._status == ProposalStatus.Passed) {
             executeProposal(userAddress, key, dataHash);
         }
+    }
+
+    function hasVotedOnProposal(bytes32 dataHash, address relayer)
+        public
+        returns (bool)
+    {
+        return _hasVoted[dataHash][relayer] == true;
     }
 
     function cancelProposal(bytes32 dataHash) public {
