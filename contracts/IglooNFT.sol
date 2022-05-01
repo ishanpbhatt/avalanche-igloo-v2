@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.10;
 
-import "/Users/ishan/.brownie/packages/OpenZeppelin/openzeppelin-contracts@4.4.1/contracts/token/ERC721/ERC721.sol";
+import "./@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract IglooNFT is ERC721 {
     uint256 currentId;

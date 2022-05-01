@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.10;
 
-import "/Users/ishan/Desktop/hackathon/contracts/IglooNFT.sol";
+import "./IglooNFT.sol";
 
 contract IglooHandler {
     IglooNFT IglooContract;

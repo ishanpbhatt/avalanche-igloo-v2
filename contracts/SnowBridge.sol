@@ -3,7 +3,7 @@
 pragma solidity ^0.8.10;
 pragma experimental ABIEncoderV2;
 
-import "/Users/ishan/Desktop/hackathon/contracts/IglooHandler.sol";
+import "./IglooHandler.sol";
 
 contract SnowBridge {
     enum ProposalStatus {
