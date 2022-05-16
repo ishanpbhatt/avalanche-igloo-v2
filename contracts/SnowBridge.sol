@@ -10,7 +10,7 @@ contract SnowBridge {
     uint8 public _domainId;
     uint256 public _relayerThreshold;
     address[] public _relayers;
-    address public _owner;
+    address public _ownerContract;
     ERC721Handler _handler;
     mapping(address => bool) _isRelayerMap;
     mapping(bytes32 => Proposal) _proposals;
@@ -45,7 +45,7 @@ contract SnowBridge {
         _domainId = domainID;
         _relayerThreshold = initialRelayerThreshold;
         _expiry = expiry;
-        _owner = owner;
+        _ownerContract = owner;
 
         _relayers = initialRelayers;
         for (uint256 i = 0; i < _relayers.length; i++) {
@@ -122,13 +122,6 @@ contract SnowBridge {
         if (proposal._status == ProposalStatus.Passed) {
             executeProposal(userAddress, key, dataHash);
         }
-    }
-
-    function hasVotedOnProposal(bytes32 dataHash, address relayer)
-        public
-        returns (bool)
-    {
-        return _hasVoted[dataHash][relayer] == true;
     }
 
     function cancelProposal(bytes32 dataHash) public {
